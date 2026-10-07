@@ -1,0 +1,23 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Filme {
+  idFilme          Int       @id @default(autoincrement()) @db.UnsignedInt @map("filme_id")
+  titulo           String    @db.VarChar(255) @map("filme_titulo")
+  sinopse          String?   @db.Text @map("filme_sinopse")
+  classificacao    String?   @db.VarChar(10) @map("filme_classificacao_indicativa")
+  duracaoMinutos   Int       @db.UnsignedSmallInt @map("filme_duracao")
+  genero           String?   @db.VarChar(100) @map("filme_genero")
+  idioma           String?   @db.VarChar(50) @map("filme_idioma")
+  dataLancamento   DateTime? @db.Date @map("filme_data_lancamento")
+  trailer          String?   @db.VarChar(500) @map("filme_trailer_url")
+  status           Int       @map("filme_status")
+
+  @@map("filme")
+}

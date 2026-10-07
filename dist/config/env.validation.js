@@ -1,0 +1,44 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateEnv = validateEnv;
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+class EnvironmentVariables {
+    DATABASE_URL;
+    PORT = 3000;
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'DATABASE_URL é obrigatória' }),
+    __metadata("design:type", String)
+], EnvironmentVariables.prototype, "DATABASE_URL", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsInt)({ message: 'PORT deve ser um número inteiro' }),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(65535),
+    __metadata("design:type", Number)
+], EnvironmentVariables.prototype, "PORT", void 0);
+function validateEnv(config) {
+    const validado = (0, class_transformer_1.plainToInstance)(EnvironmentVariables, config, {
+        enableImplicitConversion: true,
+    });
+    const erros = (0, class_validator_1.validateSync)(validado, { skipMissingProperties: false });
+    if (erros.length > 0) {
+        const detalhes = erros
+            .map((erro) => Object.values(erro.constraints ?? {}).join('; '))
+            .join('\n - ');
+        throw new Error(`Configuração inválida. Revise o seu .env:\n - ${detalhes}\n`);
+    }
+    return validado;
+}
+//# sourceMappingURL=env.validation.js.map
