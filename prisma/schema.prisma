@@ -7,6 +7,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum TipoSala {
+  DoisD @map("2D")
+  TresD @map("3D")
+  IMAX
+}
+
 model Filme {
   idFilme          Int       @id @default(autoincrement()) @db.UnsignedInt @map("filme_id")
   titulo           String    @db.VarChar(255) @map("filme_titulo")
@@ -18,6 +24,35 @@ model Filme {
   dataLancamento   DateTime? @db.Date @map("filme_data_lancamento")
   trailer          String?   @db.VarChar(500) @map("filme_trailer_url")
   status           Int       @map("filme_status")
+  sessoes          Sessao[]
 
   @@map("filme")
+}
+
+model Sala {
+  idSala       Int       @id @default(autoincrement()) @db.UnsignedInt @map("sala_id")
+  nome         String    @db.VarChar(150) @map("sala_nome")
+  capacidade   Int       @db.UnsignedSmallInt @map("sala_capacidade")
+  tipoSala     TipoSala  @default(DoisD) @map("sala_tipo_sala")
+  status       Int       @map("sala_status")
+  createdAt    DateTime  @default(now()) @db.Timestamp(0) @map("sala_created_at")
+  updatedAt    DateTime  @default(now()) @updatedAt @db.Timestamp(0) @map("sala_updated_at")
+  sessoes      Sessao[]
+
+  @@map("sala")
+}
+
+model Sessao {
+  idSessao          Int      @id @default(autoincrement()) @db.UnsignedInt @map("sessao_id")
+  filmeId           Int      @db.UnsignedInt @map("filme_id")
+  salaId            Int      @db.UnsignedInt @map("sala_id")
+  dataHoraInicio    DateTime @db.DateTime(0) @map("sessao_data_hora_inicio")
+  dataHoraFim       DateTime @db.DateTime(0) @map("sessao_data_hora_fim")
+  status            Int      @map("sessao_status")
+  createdAt         DateTime @default(now()) @db.Timestamp(0) @map("sessao_created_at")
+  updatedAt         DateTime @default(now()) @updatedAt @db.Timestamp(0) @map("sessao_updated_at")
+  filme             Filme    @relation(fields: [filmeId], references: [idFilme], onDelete: Restrict)
+  sala              Sala     @relation(fields: [salaId], references: [idSala], onDelete: Restrict)
+
+  @@map("sessao")
 }

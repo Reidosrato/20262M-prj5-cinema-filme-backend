@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from './config/env.validation';
 import { FilmesModule } from './filmes/filmes.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { SalasModule } from './salas/salas.module';
+import { SessoesModule } from './sessoes/sessoes.module';
 
 @Module({
   imports: [
@@ -13,16 +15,8 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     PrismaModule,
     FilmesModule,
+    SalasModule,
+    SessoesModule,
   ],
 })
-export class AppModule {
-  /** adicionar somente estas linhas do construtor  **/
-  constructor() {
-    console.log("Aplicação iniciada!");
-    console.log("Banco:", process.env.DATABASE_URL);
-    console.log("API Key:", process.env.API_KEY);
-    console.log("JWT Secret:", process.env.JWT_SECRET);   
-  }
-  /** fim do adicionar  **/
-}
-
+export class AppModule {}
